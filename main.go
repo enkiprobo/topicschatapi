@@ -93,12 +93,15 @@ func main() {
 	// 	fmt.Println(err.Error())
 	// 	return
 	// }
+	//=======================================================================
+	http.HandleFunc("/deletemute", handler.DeleteMute)
 	// err = database.DeleteMute("enkiprobo", 1)
 	// if err != nil {
 	// 	fmt.Println(err.Error())
 	// 	return
 	// }
 	//=======================================================================
+	http.HandleFunc("/getmutelist", handler.GetMuteList)
 	// arr, err := database.GetMuteList("enkiprobo")
 	// if err != nil {
 	// 	fmt.Println(err.Error())
@@ -106,6 +109,7 @@ func main() {
 	// }
 	// fmt.Println(arr)
 	//=======================================================================
+	http.HandleFunc("/getgrouptopic", handler.GetGroupTopic)
 	// topics, err := database.GetGroupTopicQuery(3)
 	// if err != nil {
 	// 	fmt.Println(err.Error())
@@ -113,6 +117,7 @@ func main() {
 	// }
 	// fmt.Println(topics)
 	//=======================================================================
+	http.HandleFunc("/getgroupchat", handler.GetGroupChat)
 	// groupschat, err := database.GetGroupChat(1)
 	// if err != nil {
 	// 	fmt.Println(err.Error())
@@ -120,6 +125,7 @@ func main() {
 	// }
 	// fmt.Println(groupschat)
 	//=======================================================================
+	http.HandleFunc("/getusergroup", handler.GetUserGroup)
 	// usergroup, err := database.GetUserGroup("enkiprobo")
 	// if err != nil {
 	// 	fmt.Println(err.Error())

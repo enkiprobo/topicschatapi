@@ -272,7 +272,7 @@ func GetMuteList(username string) ([]int64, error) {
 	}
 	return topicMuteList, nil
 }
-func GetGroupTopicQuery(idgroup int64) ([]Topic, error) {
+func GetGroupTopic(idgroup int64) ([]Topic, error) {
 	var topicList []Topic
 
 	rows, err := MainDB.Query(getGroupTopicQuery, idgroup)
@@ -282,7 +282,6 @@ func GetGroupTopicQuery(idgroup int64) ([]Topic, error) {
 	for rows.Next() {
 		var topic Topic
 		rows.Scan(&topic.IDTopic, &topic.TopicName, &topic.IDGroup)
-
 		topicList = append(topicList, topic)
 	}
 

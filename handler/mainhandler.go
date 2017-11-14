@@ -21,6 +21,14 @@ type (
 		GroupsChat []database.GroupsChat `json:"chat_list"`
 		Status     string                `json:"status"`
 	}
+	MuteListResponse struct {
+		MuteList []int64 `json:"topic_id_list_mute"`
+		Status   string  `json:"status"`
+	}
+	TopicResponse struct {
+		Topics []database.Topic `json:"topic_list"`
+		Status string           `json:"status"`
+	}
 )
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
@@ -259,6 +267,157 @@ func PinChat(w http.ResponseWriter, r *http.Request) {
 		log.Println(err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
+	}
+
+	w.Write(response)
+	return
+}
+func DeleteMute(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.Error(w, "not POST request", http.StatusBadRequest)
+		return
+	}
+
+	username := r.FormValue("username")
+	idTopic, _ := strconv.ParseInt(r.FormValue("idtopic"), 10, 64)
+
+	err := database.DeleteMute(username, idTopic)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	mapResponse := map[string]string{
+		"status": "OK",
+	}
+
+	response, err := json.Marshal(mapResponse)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Write(response)
+	return
+}
+
+func GetMuteList(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.Error(w, "not POST request", http.StatusBadRequest)
+		return
+	}
+
+	username := r.FormValue("username")
+
+	muteList, err := database.GetMuteList(username)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// create response
+	mapResponse := MuteListResponse{
+		MuteList: muteList,
+		Status:   "OK",
+	}
+
+	response, err := json.Marshal(mapResponse)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Write(response)
+	return
+}
+
+func GetGroupTopic(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.Error(w, "not POST request", http.StatusBadRequest)
+		return
+	}
+
+	idGroup, _ := strconv.ParseInt(r.FormValue("idgroup"), 10, 64)
+
+	groupTopics, err := database.GetGroupTopic(idGroup)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	mapResponse := TopicResponse{
+		Topics: groupTopics,
+		Status: "OK",
+	}
+
+	response, err := json.Marshal(mapResponse)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+
+	w.Write(response)
+	return
+}
+func GetGroupChat(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.Error(w, "not POST request", http.StatusBadRequest)
+		return
+	}
+
+	idTopic, _ := strconv.ParseInt(r.FormValue("idtopic"), 10, 64)
+
+	groupChats, err := database.GetGroupChat(idTopic, -1)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+
+	// create response
+	mapResponse := GroupsChatResponse{
+		GroupsChat: groupChats,
+		Status:     "OK",
+	}
+
+	response, err := json.Marshal(mapResponse)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+
+	w.Write(response)
+	return
+}
+
+func GetUserGroup(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.Error(w, "not POST request", http.StatusBadRequest)
+		return
+	}
+
+	username := r.FormValue("username")
+
+	userGroups, err := database.GetUserGroup(username)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+
+	// create response
+	mapResponse := UsersGroupResponse{
+		UsersGroup: userGroups,
+		Status:     "OK",
+	}
+
+	response, err := json.Marshal(mapResponse)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
 	w.Write(response)
