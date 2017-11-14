@@ -1,0 +1,19 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "ALdCwbzBmgi66VcOnK0x+F5Q0B4=",
+			"path": "github.com/lib/pq",
+			"revision": "8c6ee72f3e6bcb1542298dd5f76cb74af9742cec",
+			"revisionTime": "2017-11-13T04:44:40Z"
+		},
+		{
+			"checksumSHA1": "GX2hcQP8YqrXH+laJJIxUFsqoxU=",
+			"path": "github.com/lib/pq/oid",
+			"revision": "8c6ee72f3e6bcb1542298dd5f76cb74af9742cec",
+			"revisionTime": "2017-11-13T04:44:40Z"
+		}
+	],
+	"rootPath": "topicschatapi"
+}
