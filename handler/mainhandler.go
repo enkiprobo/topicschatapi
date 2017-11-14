@@ -359,6 +359,7 @@ func GetGroupTopic(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 	w.Write(response)
@@ -376,6 +377,7 @@ func GetGroupChat(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 	// create response
@@ -388,6 +390,7 @@ func GetGroupChat(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 	w.Write(response)
@@ -406,6 +409,7 @@ func GetUserGroup(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 	// create response
@@ -418,6 +422,70 @@ func GetUserGroup(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Write(response)
+	return
+}
+func InsertMember(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.Error(w, "not POST request", http.StatusBadRequest)
+		return
+	}
+
+	groupID, _ := strconv.ParseInt(r.FormValue("idgroup"), 10, 64)
+	username := r.FormValue("username")
+
+	_, err := database.InsertMember(groupID, username)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// create response
+	mapResponse := map[string]string{
+		"status": "OK",
+	}
+
+	response, err := json.Marshal(mapResponse)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Write(response)
+	return
+}
+
+func CreateTopic(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.Error(w, "not POST request", http.StatusBadRequest)
+		return
+	}
+
+	topicname := r.FormValue("topicname")
+	groupID, _ := strconv.ParseInt(r.FormValue("idgroup"), 10, 64)
+
+	err := database.CreateTopic(topicname, groupID)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// create response
+	mapResponse := map[string]string{
+		"status": "OK",
+	}
+
+	response, err := json.Marshal(mapResponse)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 	w.Write(response)

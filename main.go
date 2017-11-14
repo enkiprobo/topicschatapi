@@ -133,5 +133,8 @@ func main() {
 	// }
 	// fmt.Println(usergroup)
 	//=======================================================================
+	http.HandleFunc("/insertmember", handler.InsertMember)
+	http.HandleFunc("/createtopic", handler.CreateTopic)
+
 	log.Println(http.ListenAndServe(":"+port, nil))
 }
