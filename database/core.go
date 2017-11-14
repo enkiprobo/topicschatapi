@@ -52,6 +52,15 @@ const (
 			pin = $1
 		WHERE
 			id_gcd = $2`
+	pinChatFalseAllQuery string = `
+		UPDATE 
+			group_chat_details
+		SET
+			pin = false
+		WHERE 
+			id_topic = $1
+			AND
+			id_gcd != $2`
 	deleteMuteQuery string = `
 		DELETE FROM
 			mutes
@@ -232,7 +241,15 @@ func CreateMute(username string, idtopic int64) error {
 }
 
 func PinChat(pin bool, idgcd int64) error {
-	_, err := MainDB.Exec(pinChatQuery, pin, idgcd)
+	var idTopic int64
+
+	returningIDTopic := " RETURNING id_topic"
+	err := MainDB.QueryRow(pinChatQuery+returningIDTopic, pin, idgcd).Scan(&idTopic)
+	if err != nil {
+		return err
+	}
+	_, err = MainDB.Exec(pinChatFalseAllQuery, idTopic, idgcd)
+
 	return err
 }
 

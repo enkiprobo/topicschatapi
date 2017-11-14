@@ -80,12 +80,14 @@ func main() {
 	// 	return
 	// }
 	//========================================================================
+	http.HandleFunc("/createmute", handler.CreateMute)
 	// err = database.CreateMute("enkiprobo", 1)
 	// if err != nil {
 	// 	fmt.Println(err.Error())
 	// 	return
 	// }
 	//========================================================================
+	http.HandleFunc("/pinchat", handler.PinChat)
 	// err = database.PinChat(true, 1)
 	// if err != nil {
 	// 	fmt.Println(err.Error())

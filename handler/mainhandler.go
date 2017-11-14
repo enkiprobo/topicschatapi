@@ -203,3 +203,64 @@ func CreateChat(w http.ResponseWriter, r *http.Request) {
 	w.Write(response)
 	return
 }
+func CreateMute(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.Error(w, "not POST request", http.StatusBadRequest)
+		return
+	}
+
+	username := r.FormValue("username")
+	idTopic, _ := strconv.ParseInt(r.FormValue("idtopic"), 10, 64)
+
+	err := database.CreateMute(username, idTopic)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	mapResponse := map[string]string{
+		"status": "OK",
+	}
+
+	response, err := json.Marshal(mapResponse)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Write(response)
+	return
+}
+
+func PinChat(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.Error(w, "not POST request", http.StatusBadRequest)
+		return
+	}
+
+	pin, _ := strconv.ParseBool(r.FormValue("pin"))
+	idgcd, _ := strconv.ParseInt(r.FormValue("idgcd"), 10, 64)
+
+	err := database.PinChat(pin, idgcd)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	mapResponse := map[string]string{
+		"status": "OK",
+	}
+
+	response, err := json.Marshal(mapResponse)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Write(response)
+	return
+}
