@@ -135,6 +135,7 @@ func main() {
 	//=======================================================================
 	http.HandleFunc("/insertmember", handler.InsertMember)
 	http.HandleFunc("/createtopic", handler.CreateTopic)
+	http.HandleFunc("/getchatgroupall", handler.GetChatGroupAll)
 
 	log.Println(http.ListenAndServe(":"+port, nil))
 }

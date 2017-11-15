@@ -188,7 +188,7 @@ func CreateChat(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	groupChat, err := database.GetGroupChat(idTopic, idgcd)
+	groupChat, err := database.GetGroupChat(idTopic, idgcd, "")
 	if err != nil {
 		log.Println(err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -373,7 +373,7 @@ func GetGroupChat(w http.ResponseWriter, r *http.Request) {
 
 	idTopic, _ := strconv.ParseInt(r.FormValue("idtopic"), 10, 64)
 
-	groupChats, err := database.GetGroupChat(idTopic, -1)
+	groupChats, err := database.GetGroupChat(idTopic, -1, "")
 	if err != nil {
 		log.Println(err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -479,6 +479,53 @@ func CreateTopic(w http.ResponseWriter, r *http.Request) {
 	// create response
 	mapResponse := map[string]string{
 		"status": "OK",
+	}
+
+	response, err := json.Marshal(mapResponse)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Write(response)
+	return
+}
+
+func GetChatGroupAll(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.Error(w, "not POST request", http.StatusBadRequest)
+		return
+	}
+
+	idGroup, _ := strconv.ParseInt(r.FormValue("idgroup"), 10, 64)
+
+	topicList, err := database.GetGroupTopic(idGroup)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	whereClause := " WHERE "
+	for i, topic := range topicList {
+		if i == 0 {
+			whereClause += "id_topic = " + strconv.FormatInt(topic.IDTopic, 10)
+		} else {
+			whereClause += " OR id_topic = " + strconv.FormatInt(topic.IDTopic, 10)
+		}
+	}
+
+	groupChats, err := database.GetGroupChat(-1, -1, whereClause)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// create response
+	mapResponse := GroupsChatResponse{
+		GroupsChat: groupChats,
+		Status:     "OK",
 	}
 
 	response, err := json.Marshal(mapResponse)

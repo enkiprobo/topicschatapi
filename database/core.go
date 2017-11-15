@@ -82,6 +82,12 @@ const (
 			topics
 		WHERE
 			id_group = $1`
+	getGroupChatInteractiveQuery string = `
+		SELECT
+			id_gcd, chat_message, id_topic, pin, created_time, username, id_gm
+		FROM
+			group_chat_details
+			JOIN group_members USING(id_gm)`
 	getGroupChatQuery string = `
 		SELECT
 			id_gcd, chat_message, id_topic, pin, created_time, username, id_gm
@@ -288,13 +294,15 @@ func GetGroupTopic(idgroup int64) ([]Topic, error) {
 	return topicList, nil
 }
 
-func GetGroupChat(idtopic, idgcd int64) ([]GroupsChat, error) {
+func GetGroupChat(idtopic, idgcd int64, whereClause string) ([]GroupsChat, error) {
 	var groupsChatList []GroupsChat = []GroupsChat{}
 
 	var rows *sql.Rows
 	var err error
 	if idgcd != -1 {
 		rows, err = MainDB.Query(getGroupChatUsingIDCHATQuery, idgcd)
+	} else if whereClause != "" {
+		rows, err = MainDB.Query(getGroupChatInteractiveQuery + " " + whereClause)
 	} else {
 		rows, err = MainDB.Query(getGroupChatQuery, idtopic)
 	}
