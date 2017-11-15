@@ -273,7 +273,7 @@ func GetMuteList(username string) ([]int64, error) {
 	return topicMuteList, nil
 }
 func GetGroupTopic(idgroup int64) ([]Topic, error) {
-	var topicList []Topic
+	var topicList []Topic = []Topic{}
 
 	rows, err := MainDB.Query(getGroupTopicQuery, idgroup)
 	if err != nil {
@@ -289,7 +289,7 @@ func GetGroupTopic(idgroup int64) ([]Topic, error) {
 }
 
 func GetGroupChat(idtopic, idgcd int64) ([]GroupsChat, error) {
-	var groupsChatList []GroupsChat
+	var groupsChatList []GroupsChat = []GroupsChat{}
 
 	var rows *sql.Rows
 	var err error
@@ -312,7 +312,7 @@ func GetGroupChat(idtopic, idgcd int64) ([]GroupsChat, error) {
 }
 
 func GetUserGroup(username string) ([]UsersGroup, error) {
-	var usersGroupList []UsersGroup
+	var usersGroupList []UsersGroup = []UsersGroup{}
 
 	rows, err := MainDB.Query(getUserGroupQuery, username)
 	if err != nil {
