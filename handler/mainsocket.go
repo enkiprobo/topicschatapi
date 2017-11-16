@@ -11,25 +11,34 @@ import (
 	"log"
 	"net/http"
 	"time"
+	"topicschatapi/database"
 
 	"github.com/gorilla/websocket"
 )
 
 // hub maintains the set of active clients and broadcasts messages to the
 // clients.
-type Hub struct {
-	// Registered clients.
-	clients map[*Client]bool
+type (
+	Hub struct {
+		// Registered clients.
+		clients map[*Client]bool
 
-	// Inbound messages from the clients.
-	broadcast chan []byte
+		// Inbound messages from the clients.
+		broadcast chan []byte
 
-	// Register requests from the clients.
-	register chan *Client
+		// Register requests from the clients.
+		register chan *Client
 
-	// Unregister requests from clients.
-	unregister chan *Client
-}
+		// Unregister requests from clients.
+		unregister chan *Client
+	}
+	WebsocketResponse struct {
+		Category string              `json:"category"`
+		Chat     database.GroupsChat `json:"chat"`
+		Topic    database.Topic      `json:"topic"`
+		Group    database.UsersGroup `json:"group"`
+	}
+)
 
 func NewHub() *Hub {
 	return &Hub{

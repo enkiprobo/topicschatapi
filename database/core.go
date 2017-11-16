@@ -25,6 +25,15 @@ const (
 			groups(group_name, group_image, created_by)
 		VALUES
 			($1, $2, $3)`
+	getGroupbyGMString string = `
+			SELECT 
+				id_group, group_name, group_image
+			FROM 
+				group_members 
+			JOIN 
+				groups USING(id_group)
+			WHERE
+				id_gm=$1`
 	insertMemberQuery string = `
 		INSERT INTO
 			group_members(id_group, username)
@@ -144,6 +153,7 @@ type (
 		IDTopic       int64  `json:"id_topic"`
 		Pin           bool   `json:"pin"`
 		CreatedTime   string `json:"created_time"`
+		User          User   `json:"user"`
 		Username      string `json:"username"`
 		IDGroupMember int64  `json:"id_gm"`
 	}
@@ -333,4 +343,15 @@ func GetUserGroup(username string) ([]UsersGroup, error) {
 		usersGroupList = append(usersGroupList, usersGroup)
 	}
 	return usersGroupList, nil
+}
+
+func GetGroupByIDGM(idgm int64) UsersGroup {
+	userGroup := UsersGroup{}
+
+	row := MainDB.QueryRow(getGroupbyGMString, idgm)
+
+	row.Scan(&userGroup.IDGroup, &userGroup.GroupName, &userGroup.GroupImage)
+
+	return userGroup
+
 }

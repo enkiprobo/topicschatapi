@@ -437,16 +437,20 @@ func InsertMember(w http.ResponseWriter, r *http.Request) {
 	groupID, _ := strconv.ParseInt(r.FormValue("idgroup"), 10, 64)
 	username := r.FormValue("username")
 
-	_, err := database.InsertMember(groupID, username)
+	idgm, err := database.InsertMember(groupID, username)
 	if err != nil {
 		log.Println(err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
+	group := database.GetGroupByIDGM(idgm)
+	group.IDGroupMember = idgm
+
 	// create response
-	mapResponse := map[string]string{
-		"status": "OK",
+	mapResponse := WebsocketResponse{
+		Category: "group",
+		Group:    group,
 	}
 
 	response, err := json.Marshal(mapResponse)
@@ -456,6 +460,7 @@ func InsertMember(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	Hubnya.broadcast <- response
 	w.Write(response)
 	return
 }
