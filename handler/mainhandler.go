@@ -451,6 +451,7 @@ func InsertMember(w http.ResponseWriter, r *http.Request) {
 	mapResponse := WebsocketResponse{
 		Category: "group",
 		Group:    group,
+		Status:   "OK",
 	}
 
 	response, err := json.Marshal(mapResponse)

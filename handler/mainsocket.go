@@ -37,6 +37,7 @@ type (
 		Chat     database.GroupsChat `json:"chat"`
 		Topic    database.Topic      `json:"topic"`
 		Group    database.UsersGroup `json:"group"`
+		Status   string              `json:"status"`
 	}
 )
 
