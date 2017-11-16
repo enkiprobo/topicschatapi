@@ -3,6 +3,12 @@
 	"ignore": "test",
 	"package": [
 		{
+			"checksumSHA1": "Y6Lqha1AVUzv6VP9Qe46UfmMOpc=",
+			"path": "github.com/gorilla/websocket",
+			"revision": "7ca4275b84a9d500f68971c8c4a97f0ec18eb889",
+			"revisionTime": "2017-11-12T12:01:55Z"
+		},
+		{
 			"checksumSHA1": "ALdCwbzBmgi66VcOnK0x+F5Q0B4=",
 			"path": "github.com/lib/pq",
 			"revision": "8c6ee72f3e6bcb1542298dd5f76cb74af9742cec",

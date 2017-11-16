@@ -21,6 +21,9 @@ func main() {
 		return
 	}
 
+	handler.Hubnya = handler.NewHub()
+	go handler.Hubnya.Run()
+	http.HandleFunc("/topicslivechat", handler.LiveChatHandler)
 	// kumpulan handler
 
 	//========================================================================
