@@ -125,6 +125,15 @@ const (
 				groups USING(id_group)
 		WHERE
 			username = $1`
+	getUserFromIDGMQuery string = `
+		SELECT
+			username, full_name, profile_image, birth_date
+		FROM
+			group_members
+		JOIN 
+			accounts USING(username)
+		WHERE
+			id_gm = $1`
 )
 
 type (
@@ -327,6 +336,8 @@ func GetGroupChat(idtopic, idgcd int64, whereClause string) ([]GroupsChat, error
 		var groupChat GroupsChat
 		rows.Scan(&groupChat.IDGroupsChat, &groupChat.ChatMessage, &groupChat.IDTopic, &groupChat.Pin, &groupChat.CreatedTime, &groupChat.Username, &groupChat.IDGroupMember)
 
+		user := GetUserFromIDGM(groupChat.IDGroupMember)
+		groupChat.User = user
 		groupsChatList = append(groupsChatList, groupChat)
 	}
 	return groupsChatList, nil
@@ -357,4 +368,14 @@ func GetGroupByIDGM(idgm int64) UsersGroup {
 
 	return userGroup
 
+}
+
+func GetUserFromIDGM(idgm int64) User {
+	user := User{}
+
+	row := MainDB.QueryRow(getUserFromIDGMQuery, idgm)
+
+	row.Scan(&user.Username, &user.FullName, &user.ProfileImage, &user.BirthDate)
+
+	return user
 }

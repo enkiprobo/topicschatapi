@@ -195,6 +195,9 @@ func CreateChat(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	user := database.GetUserFromIDGM(idgm)
+
+	groupChat[0].User = user
 	// create response
 	mapResponse := WebsocketResponse{
 		Category: "chat",
