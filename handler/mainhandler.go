@@ -196,9 +196,10 @@ func CreateChat(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// create response
-	mapResponse := GroupsChatResponse{
-		GroupsChat: groupChat,
-		Status:     "OK",
+	mapResponse := WebsocketResponse{
+		Category: "chat",
+		Chat:     groupChat[0],
+		Status:   "OK",
 	}
 
 	response, err := json.Marshal(mapResponse)
@@ -208,6 +209,7 @@ func CreateChat(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	Hubnya.broadcast <- response
 	w.Write(response)
 	return
 }
