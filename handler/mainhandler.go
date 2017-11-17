@@ -486,8 +486,9 @@ func CreateTopic(w http.ResponseWriter, r *http.Request) {
 
 	// create response
 	mapResponse := WebsocketResponse{
-		Topic:  topic,
-		Status: "OK",
+		Category: "chat",
+		Topic:    topic,
+		Status:   "OK",
 	}
 
 	response, err := json.Marshal(mapResponse)
