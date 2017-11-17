@@ -136,7 +136,7 @@ func CreateGroup(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	err = database.CreateTopic("All", id)
+	_, err = database.CreateTopic("All", id)
 	if err != nil {
 		database.RollBackTX()
 		database.StopTX()
@@ -477,7 +477,7 @@ func CreateTopic(w http.ResponseWriter, r *http.Request) {
 	topicname := r.FormValue("topicname")
 	groupID, _ := strconv.ParseInt(r.FormValue("idgroup"), 10, 64)
 
-	err := database.CreateTopic(topicname, groupID)
+	topic, err := database.CreateTopic(topicname, groupID)
 	if err != nil {
 		log.Println(err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -485,8 +485,9 @@ func CreateTopic(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// create response
-	mapResponse := map[string]string{
-		"status": "OK",
+	mapResponse := WebsocketResponse{
+		Topic:  topic,
+		Status: "OK",
 	}
 
 	response, err := json.Marshal(mapResponse)
@@ -496,6 +497,7 @@ func CreateTopic(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	Hubnya.broadcast <- response
 	w.Write(response)
 	return
 }

@@ -232,14 +232,17 @@ func InsertMember(groupID int64, username string) (int64, error) {
 
 	return lastMemberID, err
 }
-func CreateTopic(topicsname string, groupID int64) error {
+func CreateTopic(topicsname string, groupID int64) (Topic, error) {
+	topicLast := Topic{}
+
 	var err error
+	returningID := " RETURNING id_topic, topic_name, id_group"
 	if MainTX != nil {
-		_, err = MainTX.Exec(createTopicQuery, topicsname, groupID)
+		err = MainTX.QueryRow(createTopicQuery+returningID, topicsname, groupID).Scan(&topicLast.IDTopic, &topicLast.TopicName, &topicLast.IDGroup)
 	} else {
-		_, err = MainDB.Exec(createTopicQuery, topicsname, groupID)
+		err = MainDB.QueryRow(createTopicQuery+returningID, topicsname, groupID).Scan(&topicLast.IDTopic, &topicLast.TopicName, &topicLast.IDGroup)
 	}
-	return err
+	return topicLast, err
 }
 
 func CreateChat(message string, idgm, idtopic int64) (int64, error) {
